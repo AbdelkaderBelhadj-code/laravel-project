@@ -1,56 +1,46 @@
-<?php
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Create a Product</h1>
+    <div>
+        @if($errors->any())
+        <ul>
+            @foreach($errors->all() as $error)
+                <li>{{$error}}</li>
+            @endforeach
+        </ul>
 
-namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Product;
-
-class ProductController extends Controller
-{
-    public function index(){
-        $products = Product::all();
-        return view('products.index', ['products' => $products]);
-
-    }
-
-    public function create(){
-        return view('products.create');
-    }
-
-    public function store(Request $request){
-        $data = $request->validate([
-            'name' => 'required',
-            'qty' => 'required|numeric',
-            'price' => 'required|decimal:0,2',
-            'description' => 'nullable'
-        ]);
-
-        $newProduct = Product::create($data);
-
-        return redirect(route('product.index'));
-
-    }
-
-    public function edit(Product $product){
-        return view('products.edit', ['product' => $product]);
-    }
-
-    public function update(Product $product, Request $request){
-        $data = $request->validate([
-            'name' => 'required',
-            'qty' => 'required|numeric',
-            'price' => 'required|decimal:0,2',
-            'description' => 'nullable'
-        ]);
-
-        $product->update($data);
-
-        return redirect(route('product.index'))->with('success', 'Product Updated Succesffully');
-
-    }
-
-    public function destroy(Product $product){
-        $product->delete();
-        return redirect(route('product.index'))->with('success', 'Product deleted Succesffully');
-    }
-}
+        @endif
+    </div>
+    <form method="post" action="{{route('product.store')}}">
+        @csrf 
+        @method('post')
+        <div>
+            <label>Name</label>
+            <input type="text" name="name" placeholder="Name" />
+        </div>
+        <div>
+            <label>Qty</label>
+            <input type="text" name="qty" placeholder="Qty" />
+        </div>
+        <div>
+            <label>Price</label>
+            <input type="text" name="price" placeholder="Price" />
+        </div>
+        <div>
+            <label>Description</label>
+            <input type="text" name="description" placeholder="Description" />
+        </div>
+        <div>
+            <input type="submit" value="Save a New Product" />
+        </div>
+    </form>
+</body>
+</html>
